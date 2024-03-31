@@ -551,6 +551,7 @@ require('lazy').setup({
         cmake = {},
         pylsp = {},
         ruff_lsp = {},
+        marksman = {},
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
