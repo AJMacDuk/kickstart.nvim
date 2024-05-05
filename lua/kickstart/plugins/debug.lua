@@ -23,7 +23,14 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
-    'mfussenegger/nvim-dap-python',
+    {
+      'mfussenegger/nvim-dap-python',
+      keys = {
+        { 'n', '<leader>wdpm', function() require('dap-python').test_method() end, { desc = 'Python: test method' } },
+        { 'n', '<leader>wdpc', function() require('dap-python').test_class() end, { desc = 'Python: test class' } },
+        { 'n', '<leader>wdps', function() require('dap-python').test_class() end, { desc = 'Python: test selection' } },
+      },
+    },
   },
   config = function()
     local dap = require 'dap'
@@ -68,15 +75,15 @@ return {
       icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
       controls = {
         icons = {
-          pause = '⏸',
-          play = '▶',
-          step_into = '⏎',
-          step_over = '⏭',
-          step_out = '⏮',
-          step_back = 'b',
-          run_last = '▶▶',
-          terminate = '⏹',
-          disconnect = '⏏',
+          pause = '',
+          play = '',
+          step_into = '',
+          step_over = '',
+          step_out = '',
+          step_back = '',
+          run_last = '',
+          terminate = '',
+          disconnect = '',
         },
       },
     }

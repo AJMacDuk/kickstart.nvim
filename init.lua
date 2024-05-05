@@ -295,6 +295,8 @@ require('lazy').setup({
         ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
         ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
         ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+        ['<leader>wd'] = { name = '[W]orkspace [D]ebug', _ = 'which_key_ignore' },
+        ['<leader>wdp'] = { name = '[W]orkspace [D]ebug [P]ython', _ = 'which_key_ignore' },
       }
     end,
   },
