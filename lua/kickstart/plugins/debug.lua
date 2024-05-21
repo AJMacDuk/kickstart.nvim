@@ -23,6 +23,35 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    {
+      'mfussenegger/nvim-dap-python',
+      keys = {
+        {
+          'n',
+          '<leader>wdpm',
+          function()
+            require('dap-python').test_method()
+          end,
+          { desc = 'Python: test method' },
+        },
+        {
+          'n',
+          '<leader>wdpc',
+          function()
+            require('dap-python').test_class()
+          end,
+          { desc = 'Python: test class' },
+        },
+        {
+          'n',
+          '<leader>wdps',
+          function()
+            require('dap-python').test_class()
+          end,
+          { desc = 'Python: test selection' },
+        },
+      },
+    },
   },
   config = function()
     local dap = require 'dap'
@@ -42,6 +71,8 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
+        'codelldb',
+        'debugpy',
       },
     }
 
@@ -64,15 +95,15 @@ return {
       icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
       controls = {
         icons = {
-          pause = '⏸',
-          play = '▶',
-          step_into = '⏎',
-          step_over = '⏭',
-          step_out = '⏮',
-          step_back = 'b',
-          run_last = '▶▶',
-          terminate = '⏹',
-          disconnect = '⏏',
+          pause = '',
+          play = '',
+          step_into = '',
+          step_over = '',
+          step_out = '',
+          step_back = '',
+          run_last = '',
+          terminate = '',
+          disconnect = '',
         },
       },
     }
@@ -92,5 +123,9 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+
+    local pythondap = require 'dap-python'
+    pythondap.test_runner = 'pytest'
+    pythondap.setup '~/.local/share/nvim/mason/packages/debugpy/venv/bin/python'
   end,
 }
