@@ -27,28 +27,25 @@ return {
       'mfussenegger/nvim-dap-python',
       keys = {
         {
-          'n',
           '<leader>wdpm',
           function()
             require('dap-python').test_method()
           end,
-          { desc = 'Python: test method' },
+          desc = 'Python: test method',
         },
         {
-          'n',
           '<leader>wdpc',
           function()
             require('dap-python').test_class()
           end,
-          { desc = 'Python: test class' },
+          desc = 'Python: test class',
         },
         {
-          'n',
           '<leader>wdps',
           function()
             require('dap-python').test_class()
           end,
-          { desc = 'Python: test selection' },
+          desc = 'Python: test selection',
         },
       },
     },
@@ -127,5 +124,10 @@ return {
     local pythondap = require 'dap-python'
     pythondap.test_runner = 'pytest'
     pythondap.setup '~/.local/share/nvim/mason/packages/debugpy/venv/bin/python'
+
+    -- enable loading of .vscode/launch.json
+    vim.keymap.set('n', '<leader>wdl', function()
+      require('dap.ext.vscode').load_launchjs(nil, nil)
+    end, { desc = 'Debug: [l]oad launch.json settings' })
   end,
 }
