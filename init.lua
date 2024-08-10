@@ -510,6 +510,8 @@ require('lazy').setup({
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
+          map('<leader>cf', vim.lsp.buf.format, '[C]ode [F]ormat')
+
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -584,7 +586,14 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         -- tsserver = {},
         --
-        clangd = {},
+        clangd = {
+          cmd = {
+            'clangd',
+            '--background-index',
+            '--query-driver=/usr/bin/arm-none-eabi-g*',
+          },
+          root_dir = require('lspconfig.util').root_pattern('.clangd', 'compile_commands.json'),
+        },
         cmake = {},
         pylsp = {},
         -- ruff_lsp = {},
@@ -592,6 +601,23 @@ require('lazy').setup({
         zls = {},
         bashls = {},
         cssls = {},
+        emmet_language_server = {},
+        html = {
+          filetypes = {
+            'html',
+            'htmldjango',
+            'templ',
+          },
+          capabilities = {
+            textDocument = {
+              completion = {
+                completionItem = {
+                  snippetSupport = true,
+                },
+              },
+            },
+          },
+        },
 
         lua_ls = {
           -- cmd = {...},
@@ -624,6 +650,8 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
         'codelldb',
         'clang-format',
+        'prettierd',
+        'prettier',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -679,6 +707,7 @@ require('lazy').setup({
         -- is found.
         -- javascript = { { "prettierd", "prettier" } },
         python = { 'isort', 'black' },
+        html = { { 'prettierd', 'prettier' } },
       },
     },
   },
@@ -871,7 +900,7 @@ require('lazy').setup({
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = true, disable = { 'ruby', 'html' } },
     },
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
