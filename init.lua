@@ -248,15 +248,15 @@ require('lazy').setup({
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
+    -- opts = {
+    --   signs = {
+    --     add = { text = '+' },
+    --     change = { text = '~' },
+    --     delete = { text = '_' },
+    --     topdelete = { text = '‾' },
+    --     changedelete = { text = '~' },
+    --   },
+    -- },
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -625,19 +625,55 @@ require('lazy').setup({
         clangd = {
           cmd = {
             'clangd',
+            '-j=4',
             '--background-index',
-            '--query-driver=/usr/bin/arm-none-eabi-g*',
+            '--clang-tidy',
+            '--completion-style=detailed',
+            -- '--query-driver=/usr/bin/arm-none-eabi-g*',
           },
           root_dir = require('lspconfig.util').root_pattern('.clangd', 'compile_commands.json'),
         },
-        cmake = {},
+        -- cmake = {},
+        neocmake = {
+          capabilities = {
+            textDocument = {
+              completion = {
+                completionItem = {
+                  snippetSupport = true,
+                },
+              },
+            },
+          },
+          init_options = {
+            format = {
+              enable = true,
+            },
+            lint = {
+              enable = true,
+            },
+            semantic_token = true,
+          },
+        },
         pylsp = {},
-        -- ruff_lsp = {},
         marksman = {},
-        zls = {},
+        zls = {
+          cmd = { '/home/ajmacd/Repos/zls/zig-out/bin/zls' },
+        },
+        jsonls = {
+          capabilities = {
+            textDocument = {
+              completion = {
+                completionItem = {
+                  snippetSupport = true,
+                },
+              },
+            },
+          },
+        },
         bashls = {},
         cssls = {},
         emmet_language_server = {},
+        yamlls = {},
         html = {
           filetypes = {
             'html',
@@ -679,9 +715,12 @@ require('lazy').setup({
       --  You can press `g?` for help in this menu.
       require('mason').setup()
 
+      require 'custom.functions.listutils'
+
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
+      ListUtils:remove_by_name(ensure_installed, 'clangd')
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'codelldb',
@@ -689,7 +728,11 @@ require('lazy').setup({
         'prettierd',
         'prettier',
       })
+
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+      servers['clangd'].capabilities = vim.tbl_deep_extend('force', {}, capabilities, servers['clangd'].capabilities or {})
+      require('lspconfig')['clangd'].setup(servers['clangd'])
 
       require('mason-lspconfig').setup {
         handlers = {
@@ -728,7 +771,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { c = true, cpp = true, cmake = true }
         local lsp_format_opt
         if disable_filetypes[vim.bo[bufnr].filetype] then
           lsp_format_opt = 'never'
@@ -942,9 +985,9 @@ require('lazy').setup({
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
         --  If you are experiencing weird indenting issues, add the language to
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
+        additional_vim_regex_highlighting = { 'ruby', 'cmake' },
       },
-      indent = { enable = true, disable = { 'ruby', 'html' } },
+      indent = { enable = true, disable = { 'ruby', 'html', 'cmake' } },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
@@ -977,6 +1020,9 @@ require('lazy').setup({
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = 'custom.plugins' },
 }, {
+  rocks = {
+    hererocks = true,
+  },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
